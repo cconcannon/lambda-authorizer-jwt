@@ -7,10 +7,14 @@ const keyClient = jwksClient({
     rateLimit: true,
     jwksRequestsPerMinute: 10,
     strictSsl: true,
-    jwksUri: 'https://sso.connect.pingidentity.com/sso/as/jwks'
+    jwksUri: process.env.JWKS_URI
 })
 
-process.env.TZ = 'America/Los_Angeles';
+const verificationOptions = {
+    // verify claims, e.g.
+    // "audience": "urn:audience"
+    "algorithms": "RS256"
+}
 
 const allow = {
     "principalId": "user",
@@ -34,35 +38,24 @@ function getSigningKey (header = decoded.header, callback) {
 }
 
 function extractTokenFromHeader(e) {
-    if (event.authorizationToken && event.authorizationToken.split(' ')[0] === 'Bearer') {
-        return event.authorizationToken.split(' ')[1];
+    if (e.authorizationToken && e.authorizationToken.split(' ')[0] === 'Bearer') {
+        return e.authorizationToken.split(' ')[1];
+    } else {
+        return e.authorizationToken;
     }
 }
 
-function validateToken(token) {
-    const verificationOptions = {
-        // issuer and/or audience should most definitely be verified
-        // "issuer": "urn:issuer",
-        // "audience": "urn:audience"
-        "algorithms": "RS256"
-    }
-
-    let result = {};
-    result.status = 0;
-    
-    jwt.verify(token, getSigningKey, verificationOptions, function(error, decoded) {
+function validateToken(token, callback) {
+    jwt.verify(token, getSigningKey, verificationOptions, function (error) {
         if (error) {
-            result.status = 403;
-            result.body = JSON.stringify(error);
+            callback("Unauthorized")
         } else {
-            result.status = 200;
-            result.body = JSON.stringify(decoded)
+            callback(null, allow)
         }
-        return result;
     })
 }
+
 exports.handler = (event, context, callback) => {
     let token = extractTokenFromHeader(event) || '';
-    
-    validateToken(token);
+    validateToken(token, callback);
 }
