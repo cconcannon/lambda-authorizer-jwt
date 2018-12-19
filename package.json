@@ -1,23 +1,19 @@
 {
-  "name": "aws-oidc-lambda-authorizer",
+  "name": "lambda-authorizer-jwt",
   "version": "1.0.0",
-  "description": "A Lambda Authorizer using the PingOne userInfo endpoint and OIDC-scoped access tokens",
+  "description": "A Lambda Authorizer in NodeJS for JWT access tokens",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pgetech/aws-oidc-lambda-authorizer.git"
+    "url": "git+https://github.com/cconcannon/lambda-authorizer-jwt.git"
   },
   "author": "Chris Concannon",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/pgetech/aws-oidc-lambda-authorizer/issues"
+    "url": "https://github.com/cconcannon/lambda-authorizer-jwt/issues"
   },
-  "homepage": "https://github.com/pgetech/aws-oidc-lambda-authorizer#readme",
-  "dependencies": {
-    "jsonwebtoken": "^8.4.0",
-    "jwks-rsa": "^1.3.0"
-  }
+  "homepage": "https://github.com/cconcannon/lambda-authorizer-jwt#readme"
 }
